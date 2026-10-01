@@ -92,6 +92,20 @@ export default function ChallengesScreen() {
     saveChallenges();
   }, [challenges, storageReady]);
 
+  // Controla se o formulário de edição está aberto.
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Guarda o nome e a duração que estão sendo editados.
+  const [editName, setEditName] = useState("");
+  const [editDuration, setEditDuration] = useState("30");
+
+  // Converte e valida a duração digitada no formulário de edição.
+  const parsedEditDuration = Number.parseInt(editDuration, 10);
+  const validEditDuration =
+    Number.isFinite(parsedEditDuration) &&
+    parsedEditDuration >= 1 &&
+    parsedEditDuration <= MAX_DAYS;
+
   // Guarda o nome digitado para o novo desafio.
   const [newName, setNewName] = useState("");
 
@@ -243,6 +257,58 @@ export default function ChallengesScreen() {
         },
       ],
     );
+  }
+
+  // Abre o formulário de edição preenchido com os dados atuais.
+  function startEditing(challenge: Challenge) {
+    setEditName(challenge.name);
+    setEditDuration(String(challenge.totalDays));
+    setIsEditing(true);
+  }
+
+  // Fecha a edição sem alterar o desafio.
+  function cancelEditing() {
+    setIsEditing(false);
+  }
+
+  // Valida e salva as alterações do desafio selecionado.
+  function saveEdit(challenge: Challenge) {
+    const name = editName.trim();
+
+    if (!name) {
+      showModal("Nome obrigatório", "Digite um nome para o desafio.");
+      return;
+    }
+
+    if (!validEditDuration) {
+      showModal(
+        "Duração inválida",
+        `Escolha uma duração entre 1 e ${MAX_DAYS} dias.`,
+      );
+      return;
+    }
+
+    // Se a duração diminuir, remove apenas os dias que ultrapassam o novo limite.
+    const updatedCompletedDays = challenge.completedDays.filter(
+      (day) => day <= parsedEditDuration,
+    );
+
+    // Atualiza o desafio mantendo seu ID e o progresso que ainda cabe na duração.
+    setChallenges((previous) =>
+      previous.map((item) =>
+        item.id === challenge.id
+          ? {
+              ...item,
+              name,
+              totalDays: parsedEditDuration,
+              completedDays: updatedCompletedDays,
+            }
+          : item,
+      ),
+    );
+
+    setIsEditing(false);
+    showModal("Desafio atualizado!", "As alterações foram salvas com sucesso.");
   }
 
   // Marca ou desmarca um dia de um desafio.
@@ -407,11 +473,77 @@ export default function ChallengesScreen() {
         {/* Botão para retornar à lista de desafios. */}
         <Pressable
           style={styles.backButton}
-          onPress={() => setSelectedChallengeId(null)}
+          onPress={() => {
+            setIsEditing(false);
+            setSelectedChallengeId(null);
+          }}
           accessibilityRole="button"
         >
           <Text style={styles.backButtonText}>← Voltar aos desafios</Text>
         </Pressable>
+
+        {/* Botão que abre o formulário para editar nome e duração. */}
+        {!isEditing && (
+          <Pressable
+            style={styles.editButton}
+            onPress={() => startEditing(challenge)}
+            accessibilityRole="button"
+          >
+            <Text style={styles.editButtonText}>✎ Editar desafio</Text>
+          </Pressable>
+        )}
+
+        {/* Formulário de edição exibido somente quando solicitado. */}
+        {isEditing && (
+          <View style={styles.createCard}>
+            <Text style={styles.sectionTitle}>Editar desafio</Text>
+
+            <Text style={styles.inputLabel}>Nome do desafio</Text>
+            <TextInput
+              style={styles.input}
+              value={editName}
+              onChangeText={setEditName}
+              placeholder="Nome do desafio"
+              placeholderTextColor="#789084"
+              maxLength={50}
+            />
+
+            <Text style={styles.inputLabel}>Duração em dias</Text>
+            <TextInput
+              style={styles.input}
+              value={editDuration}
+              onChangeText={(value) =>
+                setEditDuration(value.replace(/[^0-9]/g, ""))
+              }
+              keyboardType="number-pad"
+              placeholder="Ex.: 30"
+              placeholderTextColor="#789084"
+              maxLength={4}
+            />
+
+            {validEditDuration && (
+              <Text style={styles.goalPreview}>
+                Nova meta: {formatCurrency(calculateGoal(parsedEditDuration))}
+              </Text>
+            )}
+
+            <Pressable
+              style={styles.createButton}
+              onPress={() => saveEdit(challenge)}
+              accessibilityRole="button"
+            >
+              <Text style={styles.createButtonText}>Salvar alterações</Text>
+            </Pressable>
+
+            <Pressable
+              style={styles.cancelEditButton}
+              onPress={cancelEditing}
+              accessibilityRole="button"
+            >
+              <Text style={styles.cancelEditButtonText}>Cancelar</Text>
+            </Pressable>
+          </View>
+        )}
 
         {/* Mostra o nome do desafio aberto. */}
         <Text style={styles.title}>{challenge.name}</Text>
@@ -873,6 +1005,38 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: "#F0A0A0",
     fontSize: 12,
+    fontWeight: "600",
+  },
+
+  // Botão para abrir a edição do desafio.
+  editButton: {
+    alignSelf: "flex-start",
+    borderWidth: 1,
+    borderColor: "#42D780",
+    borderRadius: 10,
+    paddingHorizontal: 13,
+    paddingVertical: 10,
+    marginBottom: 18,
+  },
+
+  // Texto do botão de edição.
+  editButtonText: {
+    color: "#72E6A0",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+
+  // Botão para cancelar a edição.
+  cancelEditButton: {
+    alignItems: "center",
+    paddingVertical: 13,
+    marginTop: 8,
+  },
+
+  // Texto do botão de cancelar.
+  cancelEditButtonText: {
+    color: "#9CB4A5",
+    fontSize: 14,
     fontWeight: "600",
   },
 
