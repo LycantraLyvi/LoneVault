@@ -1,56 +1,96 @@
-# Welcome to your Expo app 👋
+# 🐺 LoneVault
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> Seu dinheiro, sua estratégia, seu futuro.
 
-## Get started
+O LoneVault é um aplicativo de controle financeiro pessoal desenvolvido para ajudar você a organizar suas finanças, acompanhar seus gastos e construir hábitos financeiros mais conscientes.
 
-1. Install dependencies
+## ✨ Funcionalidades
+
+- 💰 Organização das finanças pessoais
+- 📊 Acompanhamento de receitas e despesas
+- 🎯 Planejamento de metas financeiras
+- 📱 Interface desenvolvida para dispositivos móveis
+- 💾 Armazenamento local de dados
+
+> Algumas funcionalidades estão em desenvolvimento e serão disponibilizadas gradualmente.
+
+## 🛠️ Tecnologias
+
+- React Native — desenvolvimento mobile
+- Expo — ferramentas e ambiente de desenvolvimento
+- TypeScript / JavaScript — lógica da aplicação, conforme a configuração do projeto
+- AsyncStorage — armazenamento local de dados no dispositivo
+
+## 🚀 Como executar o projeto
+
+### Pré-requisitos
+
+- Node.js instalado
+- npm
+- Expo Go ou um emulador compatível
+
+### Instalação
+
+1. Clone o repositório:
+
+   ```bash
+   git clone URL_DO_SEU_REPOSITORIO
+   ```
+
+2. Entre na pasta do projeto:
+
+   ```bash
+   cd LoneVault
+   ```
+
+3. Instale as dependências:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+4. Inicie o Expo:
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+5. Abra o projeto no Expo Go ou em um emulador compatível.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 📁 Estrutura do projeto
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+A estrutura pode variar conforme a organização atual do repositório. Uma estrutura comum em projetos Expo é:
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+LoneVault/
+├── app/                 # Telas e rotas do aplicativo
+├── assets/              # Imagens, ícones e fontes
+├── components/          # Componentes reutilizáveis
+├── package.json         # Dependências e scripts
+└── app.json             # Configurações do Expo
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 🗺️ Roadmap
 
-### Other setup steps
+- [ ] Desenvolver o painel financeiro
+- [ ] Implementar cadastro de receitas e despesas
+- [ ] Criar categorias de gastos
+- [ ] Implementar metas de economia
+- [ ] Desenvolver gráficos e relatórios
+- [ ] Aprimorar a experiência do usuário
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## 🔐 Privacidade
 
-## Learn more
+O objetivo do LoneVault é oferecer uma experiência de organização financeira com atenção à privacidade dos dados. Os mecanismos de armazenamento, segurança e sincronização serão documentados conforme forem implementados.
 
-To learn more about developing your project with Expo, look at the following resources:
+## 🐺 Sobre o projeto
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+O LoneVault é um projeto independente criado com o propósito de tornar o controle financeiro mais acessível, organizado e intuitivo.
 
-## Join the community
+## 📄 Licença
 
-Join our community of developers creating universal apps.
+A licença do projeto ainda será definida.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+
+Desenvolvido com dedicação 🐺
