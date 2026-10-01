@@ -1,5 +1,7 @@
 // Importa o hook que permite guardar e atualizar informações da tela.
-import { useState } from "react";
+import { useEffect, useState } from "react";
+// Permite guardar os desafios no aparelho, mesmo depois de fechar o app.
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Importa os componentes necessários para montar a interface.
 import {
@@ -31,10 +33,64 @@ type ModalAction = {
 // Define a quantidade máxima de dias permitida.
 const MAX_DAYS = 3650;
 
+// Nome usado para encontrar os desafios salvos no armazenamento do aparelho.
+const STORAGE_KEY = "@lonevault:challenges";
+
 // Define a tela de desafios do LoneVault.
 export default function ChallengesScreen() {
   // Guarda todos os desafios criados pelo usuário.
   const [challenges, setChallenges] = useState<Challenge[]>([]);
+
+  // Indica se já tentamos carregar os dados salvos.
+  // Isso evita salvar a lista vazia antes de terminar o carregamento.
+  const [storageReady, setStorageReady] = useState(false);
+
+  // Carrega os desafios salvos assim que a tela é aberta.
+  useEffect(() => {
+    async function loadChallenges() {
+      try {
+        // Busca no aparelho os dados guardados anteriormente.
+        const savedChallenges = await AsyncStorage.getItem(STORAGE_KEY);
+
+        // Se houver dados, transforma o texto JSON novamente em uma lista.
+        if (savedChallenges) {
+          const parsedChallenges: unknown = JSON.parse(savedChallenges);
+
+          // Confere se o conteúdo salvo é uma lista antes de usá-lo.
+          if (Array.isArray(parsedChallenges)) {
+            setChallenges(parsedChallenges as Challenge[]);
+          }
+        }
+      } catch (error) {
+        // Se houver problema ao ler os dados, mantém a tela funcionando.
+        console.error("Não foi possível carregar os desafios:", error);
+      } finally {
+        // Libera o salvamento depois que a leitura terminar.
+        setStorageReady(true);
+      }
+    }
+
+    loadChallenges();
+  }, []);
+
+  // Salva a lista sempre que os desafios mudarem, após o carregamento inicial.
+  useEffect(() => {
+    if (!storageReady) {
+      return;
+    }
+
+    async function saveChallenges() {
+      try {
+        // Converte a lista em texto para o AsyncStorage conseguir guardá-la.
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(challenges));
+      } catch (error) {
+        // Registra o erro para facilitar a identificação de problemas.
+        console.error("Não foi possível salvar os desafios:", error);
+      }
+    }
+
+    saveChallenges();
+  }, [challenges, storageReady]);
 
   // Guarda o nome digitado para o novo desafio.
   const [newName, setNewName] = useState("");
@@ -580,7 +636,7 @@ export default function ChallengesScreen() {
         {/* Aviso sobre as limitações desta versão do aplicativo. */}
         <Text style={styles.footer}>
           Os valores são registros simulados. Esta versão não movimenta dinheiro
-          real e ainda não salva os desafios permanentemente após fechar o
+          real. Seus desafios ficam salvos neste aparelho mesmo após fechar o
           aplicativo.
         </Text>
       </ScrollView>
